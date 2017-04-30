@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="250dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
+    <View
+        android:layout_width="match_parent"
+        android:background="@color/black_cardview_transparent"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="bottom|left"
+        android:paddingLeft="20dp"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/card_title"
+            android:textSize="?android:textAppearanceMedium"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/card_time"
+            android:textSize="?android:textAppearanceSmall"/>
+
+        <TextView
+            android:id="@+id/card_calories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="?android:textAppearanceSmall" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/card_date"
+            android:textSize="?android:textAppearanceSmall"/>
+    </LinearLayout>
+
+</FrameLayout>
