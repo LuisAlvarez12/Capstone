@@ -28,6 +28,8 @@ public class DetailFragment extends Fragment {
     @BindView(R.id.btn_workout_control)
     ImageView vWorkoutControl;
 
+    private boolean isPlaying;
+
 
 
     public DetailFragment() {
@@ -57,12 +59,24 @@ public class DetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(getActivity(),rootView);
+        String recievedIntent = getActivity().getIntent().getStringExtra("id");
         instantiateTouchEvents();
 
         return rootView;
     }
 
     private void instantiateTouchEvents() {
+
+        vWorkoutControl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isPlaying){
+
+                }else if(!isPlaying){
+
+                }
+            }
+        });
 
     }
 

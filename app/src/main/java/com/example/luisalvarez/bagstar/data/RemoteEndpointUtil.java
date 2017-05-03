@@ -19,12 +19,17 @@ public class RemoteEndpointUtil {
     private RemoteEndpointUtil() {
     }
 
-    public static JSONArray fetchJsonArray() {
+    public static JSONArray fetchJsonArray(int urlIdentifier) {
 
         String itemsJson = null;
         try {
             //fetch the standard text of all the article information
-            itemsJson = fetchPlainText(Config.BASE_URL);
+            if(urlIdentifier == 0 ) {
+                itemsJson = fetchPlainText(Config.PROFILE_URL);
+            }else{
+                itemsJson = fetchPlainText(Config.WORKOUT_URL);
+
+            }
         } catch (IOException e) {
             Log.e(TAG, "Error fetching items JSON", e);
             return null;

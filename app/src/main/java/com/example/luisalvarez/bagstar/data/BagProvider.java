@@ -113,14 +113,45 @@ public class BagProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         long _id;
         Uri returnUri;
-        _id = db.insert(DataContract.ProfileEntry.TABLE_NAME, null, values);
-        if(_id > 0){
-            returnUri =  DataContract.ProfileEntry.buildProfileUri(_id);
-        } else{
-            throw new UnsupportedOperationException("Unable to insert rows into: " + uri);
+        switch (sUriMatcher.match(uri)){
+            case PROFILE_LIST:
+                _id = db.insert(DataContract.ProfileEntry.TABLE_NAME,null,values);
+                if(_id > 0){
+                    returnUri =  DataContract.ProfileEntry.buildProfileUri(_id);
+                    getContext().getContentResolver().notifyChange(uri,null);
+                    return returnUri;
+                } else{
+                    throw new UnsupportedOperationException("Unable to insert rows into: " + uri);
+                }
+            case PROFILE_ID:
+                _id = db.insert(DataContract.ProfileEntry.TABLE_NAME,null,values);
+                if(_id > 0){
+                    returnUri =  DataContract.ProfileEntry.buildProfileUri(_id);
+                    getContext().getContentResolver().notifyChange(uri,null);
+                    return returnUri;
+                } else{
+                    throw new UnsupportedOperationException("Unable to insert rows into: " + uri);
+                }
+            case WORKOUT_LIST:
+                _id = db.insert(DataContract.WorkoutsEntry.TABLE_NAME,null,values);
+                if(_id > 0){
+                    returnUri =  DataContract.WorkoutsEntry.buildMovieUri(_id);
+                    getContext().getContentResolver().notifyChange(uri,null);
+                    return returnUri;
+                } else{
+                    throw new UnsupportedOperationException("Unable to insert rows into: " + uri);
+                }
+            case WORKOUT_ID:
+                _id = db.insert(DataContract.WorkoutsEntry.TABLE_NAME,null,values);
+                if(_id > 0){
+                    returnUri =  DataContract.WorkoutsEntry.buildMovieUri(_id);
+                    getContext().getContentResolver().notifyChange(uri,null);
+                    return returnUri;
+                } else{
+                    throw new UnsupportedOperationException("Unable to insert rows into: " + uri);
+                }
         }
-        getContext().getContentResolver().notifyChange(uri,null);
-        return returnUri;
+        return null;
     }
 
     @Override

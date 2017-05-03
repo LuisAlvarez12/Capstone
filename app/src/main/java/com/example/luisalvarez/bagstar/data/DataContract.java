@@ -67,6 +67,17 @@ public class DataContract {
                 COLUMN_WORKOUT_DATE,
                 COLUMN_WORKOUT_TIME
         };
+        public static final int POSITION_WORKOUT_NAME = 0;
+        public static final int POSITION_WORKOUT_ID = 1;
+        public static final int POSITION_WORKOUT_CAL_BURNED_START = 2;
+        public static final int POSITION_WORKOUT_CAL_BURNED_END = 3;
+        public static final int POSITION_WORKOUT_IMG_LINK = 4;
+        public static final int POSITION_WORKOUT_CUSTOM_WORKOUT = 5;
+        public static final int POSITION_WORKOUT_DATE = 6;
+        public static final int POSITION_WORKOUT_TIME = 7;
+
+
+
         // Define a function to build a URI to find a specific movie by it's identifier
         public static Uri buildMovieUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -105,6 +116,14 @@ public class DataContract {
                 COLUMN_PROFILE_LAST_WORKOUT,
                 COLUMN_PROFILE_QUOTE
         };
+        public static final int POSITION_PROFILE_NAME = 0;
+        public static final int POSITION_PROFILE_ID = 1;
+        public static final int POSITION_PROFILE_AGE = 2;
+        public static final int POSITION_PROFILE_STREAK = 3;
+        public static final int POSITION_PROFILE_WEIGHT = 4;
+        public static final int POSITION_PROFILE_HEIGHT = 5;
+        public static final int POSITION_PROFILE_LAST_WORKOUT = 6;
+        public static final int POSITION_PROFILE_QUOTE = 7;
 
 
         // Define a function to build a URI to find a specific movie by it's identifier
