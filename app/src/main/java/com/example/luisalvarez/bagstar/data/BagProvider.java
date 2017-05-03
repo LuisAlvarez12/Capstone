@@ -15,10 +15,10 @@ import android.support.annotation.Nullable;
  */
 
 
-public class MovieProvider extends ContentProvider {
+public class BagProvider extends ContentProvider {
 
     private static final UriMatcher sUriMatcher = createUriBuilder();
-    private MovieHelperDb mOpenHelper;
+    private BagHelperDb mOpenHelper;
     private static final int WORKOUT_LIST = 100;
     private static final int WORKOUT_ID = 101;
     private static final int PROFILE_LIST = 106;
@@ -26,7 +26,7 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mOpenHelper = new MovieHelperDb(getContext());
+        mOpenHelper = new BagHelperDb(getContext());
         return true;
     }
 
@@ -113,9 +113,9 @@ public class MovieProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         long _id;
         Uri returnUri;
-        _id = db.insert(DataContract.WorkoutsEntry.TABLE_NAME, null, values);
+        _id = db.insert(DataContract.ProfileEntry.TABLE_NAME, null, values);
         if(_id > 0){
-            returnUri =  DataContract.WorkoutsEntry.buildMovieUri(_id);
+            returnUri =  DataContract.ProfileEntry.buildProfileUri(_id);
         } else{
             throw new UnsupportedOperationException("Unable to insert rows into: " + uri);
         }
@@ -179,10 +179,10 @@ public class MovieProvider extends ContentProvider {
         // All paths to the UriMatcher have a corresponding code to return
         // when a match is found (the ints above).
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        matcher.addURI(content, DataContract.sWorkouts, PROFILE_LIST);
-        matcher.addURI(content, DataContract.sWorkouts + "/#", PROFILE_ID);
-        matcher.addURI(content, DataContract.sProfile, WORKOUT_LIST);
-        matcher.addURI(content, DataContract.sProfile + "/#", WORKOUT_ID);
+        matcher.addURI(content, DataContract.sWorkouts, WORKOUT_LIST);
+        matcher.addURI(content, DataContract.sWorkouts + "/#", WORKOUT_ID);
+        matcher.addURI(content, DataContract.sProfile, PROFILE_LIST);
+        matcher.addURI(content, DataContract.sProfile + "/#", PROFILE_ID);
 
 
 //        matcher.addURI(content, DataContract.PATH_MOVIE, MOVIE);

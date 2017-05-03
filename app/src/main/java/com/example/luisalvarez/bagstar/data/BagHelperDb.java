@@ -8,12 +8,12 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by luisalvarez on 2/11/17.
  */
 
-public class MovieHelperDb extends SQLiteOpenHelper {
+public class BagHelperDb extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "bagstar.db";
 
-    public MovieHelperDb(Context context) {
+    public BagHelperDb(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -29,7 +29,7 @@ public class MovieHelperDb extends SQLiteOpenHelper {
                 DataContract.ProfileEntry.COLUMN_PROFILE_STREAK + " TEXT NOT NULL, " +
                 DataContract.ProfileEntry.COLUMN_PROFILE_LAST_WORKOUT + " TEXT NOT NULL, " +
                 DataContract.ProfileEntry.COLUMN_PROFILE_QUOTE + " TEXT NOT NULL, " +
-                DataContract.ProfileEntry.COLUMN_PROFILE_ID + " TEXT NOT NULL," +
+                DataContract.ProfileEntry.COLUMN_PROFILE_ID + " TEXT NOT NULL" +
                 ");";
         final String CREATE_WORKOUT_TABLE = "CREATE TABLE " + DataContract.WorkoutsEntry.TABLE_NAME + " (" +
                 DataContract.WorkoutsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -40,7 +40,7 @@ public class MovieHelperDb extends SQLiteOpenHelper {
                 DataContract.WorkoutsEntry.COLUMN_WORKOUT_CAL_BURNED_START + " TEXT NOT NULL, " +
                 DataContract.WorkoutsEntry.COLUMN_WORKOUT_CAL_BURNED_END + " TEXT NOT NULL, " +
                 DataContract.WorkoutsEntry.COLUMN_WORKOUT_IMG_LINK + " TEXT NOT NULL, " +
-                DataContract.WorkoutsEntry.COLUMN_PROFILE_ID + " TEXT NOT NULL," +
+                DataContract.WorkoutsEntry.COLUMN_PROFILE_ID + " TEXT NOT NULL" +
                 ");";
         db.execSQL(CREATE_WORKOUT_TABLE);
         db.execSQL(CREATE_PROFILE_TABLE);

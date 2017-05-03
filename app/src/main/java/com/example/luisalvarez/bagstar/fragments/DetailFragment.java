@@ -2,28 +2,39 @@ package com.example.luisalvarez.bagstar.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.luisalvarez.bagstar.R;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class DetailFragment extends Fragment {
 
+    @BindView(R.id.recycler)
+    RecyclerView vRecyclerView;
+
+    @BindView(R.id.tv_time)
+    TextView vElapstedTime;
+
+    @BindView(R.id.tv_calories)
+    TextView vCaloriesBurned;
+
+    @BindView(R.id.btn_workout_control)
+    ImageView vWorkoutControl;
+
+
+
     public DetailFragment() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DetailFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DetailFragment newInstance(String param1, String param2) {
+     public static DetailFragment newInstance(String param1, String param2) {
       DetailFragment fragment = new DetailFragment();
 //        Bundle args = new Bundle();
 //        args.putString(ARG_PARAM1, param1);
@@ -44,8 +55,15 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        ButterKnife.bind(getActivity(),rootView);
+        instantiateTouchEvents();
+
+        return rootView;
     }
 
+    private void instantiateTouchEvents() {
+
+    }
 
 }

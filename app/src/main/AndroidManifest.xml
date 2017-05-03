@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.luisalvarez.bagstar">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,6 +21,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.DetailActivity"></activity>
+        <provider android:name=".data.BagProvider"
+            android:authorities="com.example.luisalvarez.bagstar"
+             />
     </application>
 
 </manifest>
