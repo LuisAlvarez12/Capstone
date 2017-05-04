@@ -57,6 +57,8 @@ public class DataContract {
         public static final String COLUMN_WORKOUT_TIME = "workoutTime";
         public static final String COLUMN_WORKOUT_DATE = "workoutDate";
         public static final String COLUMN_WORKOUT_IMG_LINK = "workoutImageLink";
+        public static final String COLUMN_WORKOUT_MOVE_ARRAY = "workoutArray";
+
         public static final String[] projection = {
                 COLUMN_WORKOUT_NAME,
                 COLUMN_WORKOUT_ID,
@@ -65,7 +67,8 @@ public class DataContract {
                 COLUMN_WORKOUT_IMG_LINK,
                 COLUMN_WORKOUT_CUSTOM_WORKOUT,
                 COLUMN_WORKOUT_DATE,
-                COLUMN_WORKOUT_TIME
+                COLUMN_WORKOUT_TIME,
+                COLUMN_WORKOUT_MOVE_ARRAY
         };
         public static final int POSITION_WORKOUT_NAME = 0;
         public static final int POSITION_WORKOUT_ID = 1;
@@ -75,6 +78,7 @@ public class DataContract {
         public static final int POSITION_WORKOUT_CUSTOM_WORKOUT = 5;
         public static final int POSITION_WORKOUT_DATE = 6;
         public static final int POSITION_WORKOUT_TIME = 7;
+        public static final int POSITION_WORKOUT_MOVE_COUNTER = 8;
 
 
 

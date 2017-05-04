@@ -1,37 +1,28 @@
 package com.example.luisalvarez.bagstar.activities;
 
-import android.content.ContentProviderOperation;
 import android.content.ContentValues;
-import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.RemoteException;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.example.luisalvarez.bagstar.R;
 import com.example.luisalvarez.bagstar.data.DataContract;
 import com.example.luisalvarez.bagstar.data.RemoteEndpointUtil;
-import com.example.luisalvarez.bagstar.data.WorkoutAdapter;
+import com.example.luisalvarez.bagstar.adapter.WorkoutAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
-import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.R.attr.data;
-import static com.example.luisalvarez.bagstar.R.id.toolbar;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
 

@@ -1,13 +1,9 @@
-package com.example.luisalvarez.bagstar.data;
+package com.example.luisalvarez.bagstar.adapter;
 
-import android.app.Activity;
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.luisalvarez.bagstar.R;
 import com.example.luisalvarez.bagstar.activities.DetailActivity;
+import com.example.luisalvarez.bagstar.data.DataContract;
 import com.squareup.picasso.Picasso;
 
 /**
