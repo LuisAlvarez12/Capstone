@@ -6,13 +6,16 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -43,24 +46,33 @@ public class DetailFragment extends Fragment {
 
     private ImageView vWorkoutControl;
     private RecyclerView vRecyclerView;
+    private Chronometer timer;
     private boolean isPlaying;
-    private int counter_rightHook,counter_leftHook,counter_rightJab,
-            counter_leftJab,counter_rightUpperCut,counter_leftUpperCut,
-            counter_rightKnee,counter_leftKnee,counter_stepBack,
-            counter_dodgeLeft,counter_dodgeRight, counter_rightKick,counter_leftKick = 0;
+    private int counter_rightHook, counter_leftHook, counter_rightJab,
+            counter_leftJab, counter_rightUpperCut, counter_leftUpperCut,
+            counter_rightKnee, counter_leftKnee, counter_stepBack,
+            counter_dodgeLeft, counter_dodgeRight, counter_rightKick, counter_leftKick = 0;
     private List<Integer> list_occuringCount;
     private List<Integer> list_currentCount;
     private MediaPlayer mediaPlayer = null;
-
+    private MoveCountGridAdapter gridAdapter;
+    private AssetFileDescriptor afd;
+    private long timeWhenStopped = 0;
 
     public DetailFragment() {
 
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        Log.d("count","dead");
         mediaPlayer.stop();
+        mediaPlayer.reset();
+        mediaPlayer=null;
+        afd=null;
+        super.onDestroyView();
+            
+
     }
 
     @Override
@@ -76,44 +88,45 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        ButterKnife.bind(this,rootView);
-        vWorkoutControl = (ImageView)rootView.findViewById(R.id.btn_workout_control);
-        vRecyclerView = (RecyclerView)rootView.findViewById(R.id.recycler);
-        vRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4));
+        ButterKnife.bind(this, rootView);
+        vWorkoutControl = (ImageView) rootView.findViewById(R.id.btn_workout_control);
+        vRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler);
+        vRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
+        timer = (Chronometer)rootView.findViewById(R.id.tv_time);
         String recievedIntent = getActivity().getIntent().getStringExtra("id");
         Cursor cursor = getActivity().getContentResolver().query(DataContract.WorkoutsEntry.CONTENT_URI,
-                DataContract.WorkoutsEntry.projection,"workoutID=?",new String[]{recievedIntent},null);
+                DataContract.WorkoutsEntry.projection, "workoutID=?", new String[]{recievedIntent}, null);
         cursor.moveToFirst();
         instantiateMoveOccuranceRate(cursor.getString(DataContract.WorkoutsEntry.POSITION_WORKOUT_MOVE_COUNTER));
         instantiateCurrentMoveCounter();
-        MoveCountGridAdapter gridAdapter = new MoveCountGridAdapter(getActivity(),R.layout.movecount_grid_item, list_currentCount);
+        gridAdapter = new MoveCountGridAdapter(getActivity(), R.layout.movecount_grid_item, list_currentCount);
         vRecyclerView.setAdapter(gridAdapter);
-        counter_rightHook = 60;
-        list_currentCount.set(0,counter_rightHook);
-        gridAdapter.swapItems(list_currentCount);
         instantiateTouchEvents();
         return rootView;
     }
 
     //the list that determines the occurances of every move
-    private void instantiateMoveOccuranceRate(String s){
+    private void instantiateMoveOccuranceRate(String s) {
         list_occuringCount = new ArrayList<Integer>();
         String[] strArray = s.split(",");
         int[] intArray = new int[strArray.length];
-        for(int i = 0; i < strArray.length; i++) {
+        for (int i = 0; i < strArray.length; i++) {
             intArray[i] = Integer.parseInt(strArray[i]);
         }
-        for (int index = 0; index < intArray.length; index++)
-        {
+        for (int index = 0; index < intArray.length; index++) {
             list_occuringCount.add(intArray[index]);
         }
     }
 
+    private void incrementCounterView(int index,int move) {
+        list_currentCount.set(index,move);
+        gridAdapter.swapItems(list_currentCount);
+    }
 
     //the list that holds the current count of moves as time goes on
     @NonNull
     private List<Integer> instantiateCurrentMoveCounter() {
-        list_currentCount=new ArrayList<Integer>();
+        list_currentCount = new ArrayList<Integer>();
         list_currentCount.add(counter_rightHook);
         list_currentCount.add(counter_leftHook);
         list_currentCount.add(counter_rightJab);
@@ -130,44 +143,124 @@ public class DetailFragment extends Fragment {
         return list_currentCount;
     }
 
-    public static int getRandom(int[] array) {
-        int rnd = new Random().nextInt(array.length);
-        return array[rnd];
-    }
-
     //media playback and touch events
     private void instantiateTouchEvents() {
-        isPlaying=false;
+        isPlaying = false;
         vWorkoutControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isPlaying){
-
-                }else if(!isPlaying){
+                if (isPlaying) {
+                    timeWhenStopped = timer.getBase() - SystemClock.elapsedRealtime();
+                    timer.stop();
+                    vWorkoutControl.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.play));
+                    mediaPlayer.pause();
+                    mediaPlayer.stop();
+                    isPlaying = false;
+                } else if (!isPlaying) {
+                    timer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+                    timer.start();
+                    vWorkoutControl.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.pause));
                     mediaPlayer = new MediaPlayer();
                     String fileName = Config.MOVE_RIGHT_JAB;
                     try {
-                        AssetFileDescriptor afd = getActivity().getAssets().openFd(fileName);
+                        afd = getActivity().getAssets().openFd(fileName);
                         mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
                         afd.close();
                         mediaPlayer.prepare();
                         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            mediaPlayer.stop();
-                            try {
-                                mediaPlayer.reset();
-                                AssetFileDescriptor afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
-                                mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-                                afd.close();
-                                mediaPlayer.prepare();
-                                mediaPlayer.start();
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                if (!isPlaying) {
+                                    mediaPlayer.stop();
+                                    mediaPlayer.reset();
+                                } else {
+                                    mediaPlayer.stop();
+                                    try {
+                                        mediaPlayer.reset();
+                                        int selectedIndex = new Random().nextInt(list_occuringCount.size());
+                                        int itemInList = list_occuringCount.get(selectedIndex);
+                                        AssetFileDescriptor afd = null;
+
+                                        switch (itemInList) {
+                                            //right hook
+                                            case 0:
+                                                afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
+                                                incrementCounterView(itemInList,++counter_rightHook);
+                                                break;
+                                            //left hook
+                                            case 1:
+                                                afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
+                                                incrementCounterView(itemInList,++counter_leftHook);
+                                                break;
+                                            //right jab
+                                            case 2:
+                                                afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
+                                                incrementCounterView(itemInList,++counter_rightJab);
+                                                break;
+                                            //left jab
+                                            case 3:
+                                                afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
+                                                incrementCounterView(itemInList,++counter_leftJab);
+                                                break;
+                                            //right uppercut
+                                            case 4:
+                                                afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
+                                                incrementCounterView(itemInList,++counter_rightUpperCut);
+                                                break;
+                                            //left uppercut
+                                            case 5:
+                                                afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
+                                                incrementCounterView(itemInList,++counter_leftUpperCut);
+                                                break;
+                                            //right knee
+                                            case 6:
+                                                afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
+                                                incrementCounterView(itemInList,++counter_rightKnee);
+                                                break;
+                                            //left knee
+                                            case 7:
+                                                afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
+                                                incrementCounterView(itemInList,++counter_leftKnee);
+                                                break;
+                                            //step back
+                                            case 8:
+                                                afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
+                                                incrementCounterView(itemInList,++counter_stepBack);
+                                                break;
+                                            //dodge left
+                                            case 9:
+                                                afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
+                                                incrementCounterView(itemInList,++counter_dodgeLeft);
+                                                break;
+                                            //dodge right
+                                            case 10:
+                                                afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
+                                                incrementCounterView(itemInList,++counter_dodgeRight);
+                                                break;
+                                            //right kick
+                                            case 11:
+                                                afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
+                                                incrementCounterView(itemInList,++counter_rightKick);
+                                                break;
+                                            //left kick
+                                            case 12:
+                                                afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
+                                                incrementCounterView(itemInList,++counter_leftKick);
+                                                break;
+                                        }
+                                        mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                                        afd.close();
+                                        mediaPlayer.prepare();
+                                        mediaPlayer.start();
+                                        isPlaying = true;
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
-                        }
-                    });
-                    mediaPlayer.start();
+                        });
+                        mediaPlayer.start();
+                        isPlaying = true;
                     } catch (final IOException e) {
                         e.printStackTrace();
                     }
@@ -175,11 +268,6 @@ public class DetailFragment extends Fragment {
             }
         });
     }
-
-
-
-
-
 
 
 }

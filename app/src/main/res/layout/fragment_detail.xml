@@ -71,9 +71,8 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:textColor="@color/colorAccent"/>
-            <TextView
+            <Chronometer
                 android:id="@+id/tv_time"
-                android:text="12:23:93"
                 android:textSize="60sp"
                 android:gravity="center"
                 android:layout_gravity="center"
