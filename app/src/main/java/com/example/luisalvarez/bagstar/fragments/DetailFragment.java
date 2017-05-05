@@ -93,6 +93,7 @@ public class DetailFragment extends Fragment {
         vRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler);
         vRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
         timer = (Chronometer)rootView.findViewById(R.id.tv_time);
+        mediaPlayer = new MediaPlayer();
         String recievedIntent = getActivity().getIntent().getStringExtra("id");
         Cursor cursor = getActivity().getContentResolver().query(DataContract.WorkoutsEntry.CONTENT_URI,
                 DataContract.WorkoutsEntry.projection, "workoutID=?", new String[]{recievedIntent}, null);
@@ -160,7 +161,6 @@ public class DetailFragment extends Fragment {
                     timer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
                     timer.start();
                     vWorkoutControl.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.pause));
-                    mediaPlayer = new MediaPlayer();
                     String fileName = Config.MOVE_RIGHT_JAB;
                     try {
                         afd = getActivity().getAssets().openFd(fileName);

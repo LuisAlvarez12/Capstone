@@ -40,6 +40,7 @@
         <LinearLayout
             android:id="@+id/label_holder"
             android:orientation="vertical"
+            android:background="@color/white_3"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2">
@@ -47,12 +48,12 @@
             <TextView
                 android:text="@string/calories_burned"
                 android:gravity="center"
-                android:textSize="12sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:textColor="@color/colorAccent"/>
+                android:textColor="@color/colorPrimary"/>
             <TextView
                 android:id="@+id/tv_calories"
                 android:text="123"
@@ -61,16 +62,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:textColor="@color/primary_text_light"/>
+                android:textColor="@color/primary_text_dark"/>
             <TextView
                 android:text="@string/label_time"
                 android:gravity="center"
-                android:textSize="12sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:textColor="@color/colorAccent"/>
+                android:textColor="@color/colorPrimary"/>
             <Chronometer
                 android:id="@+id/tv_time"
                 android:textSize="60sp"
@@ -79,7 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="3"
-                android:textColor="@color/primary_text_light"/>
+                android:textColor="@color/primary_text_dark"/>
         </LinearLayout>
 
         <LinearLayout
