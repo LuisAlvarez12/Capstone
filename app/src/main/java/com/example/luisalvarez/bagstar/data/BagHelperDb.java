@@ -40,7 +40,7 @@ public class BagHelperDb extends SQLiteOpenHelper {
                 DataContract.WorkoutsEntry.COLUMN_WORKOUT_CAL_BURNED_START + " TEXT NOT NULL, " +
                 DataContract.WorkoutsEntry.COLUMN_WORKOUT_CAL_BURNED_END + " TEXT NOT NULL, " +
                 DataContract.WorkoutsEntry.COLUMN_WORKOUT_IMG_LINK + " TEXT NOT NULL, " +
-                DataContract.WorkoutsEntry.COLUMN_WORKOUT_ID + " TEXT NOT NULL" +
+                DataContract.WorkoutsEntry.COLUMN_WORKOUT_ID + " TEXT NOT NULL, " +
                 DataContract.WorkoutsEntry.COLUMN_WORKOUT_MOVE_ARRAY + " TEXT NOT NULL" +
                 ");";
         db.execSQL(CREATE_WORKOUT_TABLE);

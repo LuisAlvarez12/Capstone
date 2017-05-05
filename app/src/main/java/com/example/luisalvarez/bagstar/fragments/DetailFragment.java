@@ -1,14 +1,15 @@
 package com.example.luisalvarez.bagstar.fragments;
 
-import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +21,16 @@ import com.example.luisalvarez.bagstar.adapter.MoveCountGridAdapter;
 import com.example.luisalvarez.bagstar.data.Config;
 import com.example.luisalvarez.bagstar.data.DataContract;
 
-import java.lang.reflect.Array;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.LogRecord;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.R.attr.bitmap;
 
 
 public class DetailFragment extends Fragment {
@@ -45,9 +48,19 @@ public class DetailFragment extends Fragment {
             counter_leftJab,counter_rightUpperCut,counter_leftUpperCut,
             counter_rightKnee,counter_leftKnee,counter_stepBack,
             counter_dodgeLeft,counter_dodgeRight, counter_rightKick,counter_leftKick = 0;
+    private List<Integer> list_occuringCount;
+    private List<Integer> list_currentCount;
+    private MediaPlayer mediaPlayer = null;
+
 
     public DetailFragment() {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mediaPlayer.stop();
     }
 
     @Override
@@ -66,35 +79,55 @@ public class DetailFragment extends Fragment {
         ButterKnife.bind(this,rootView);
         vWorkoutControl = (ImageView)rootView.findViewById(R.id.btn_workout_control);
         vRecyclerView = (RecyclerView)rootView.findViewById(R.id.recycler);
-
         vRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),4));
-        List<Integer> counter_list = new ArrayList<>();
-        counter_list.add(counter_rightHook);
-        counter_list.add(counter_leftHook);
-        counter_list.add(counter_rightJab);
-        counter_list.add(counter_leftJab);
-        counter_list.add(counter_rightUpperCut);
-        counter_list.add(counter_leftUpperCut);
-        counter_list.add(counter_rightKnee);
-        counter_list.add(counter_leftKnee);
-        counter_list.add(counter_stepBack);
-        counter_list.add(counter_dodgeLeft);
-        counter_list.add(counter_dodgeRight);
-        counter_list.add(counter_rightKick);
-        counter_list.add(counter_leftKick);
-
-        MoveCountGridAdapter gridAdapter = new MoveCountGridAdapter(getActivity(),R.layout.movecount_grid_item,counter_list);
-        vRecyclerView.setAdapter(gridAdapter);
-        counter_rightHook = 60;
-        counter_list.set(0,counter_rightHook);
-        Log.d("name",""+counter_list.get(0));
-        gridAdapter.swapItems(counter_list);
         String recievedIntent = getActivity().getIntent().getStringExtra("id");
         Cursor cursor = getActivity().getContentResolver().query(DataContract.WorkoutsEntry.CONTENT_URI,
                 DataContract.WorkoutsEntry.projection,"workoutID=?",new String[]{recievedIntent},null);
         cursor.moveToFirst();
+        instantiateMoveOccuranceRate(cursor.getString(DataContract.WorkoutsEntry.POSITION_WORKOUT_MOVE_COUNTER));
+        instantiateCurrentMoveCounter();
+        MoveCountGridAdapter gridAdapter = new MoveCountGridAdapter(getActivity(),R.layout.movecount_grid_item, list_currentCount);
+        vRecyclerView.setAdapter(gridAdapter);
+        counter_rightHook = 60;
+        list_currentCount.set(0,counter_rightHook);
+        gridAdapter.swapItems(list_currentCount);
         instantiateTouchEvents();
         return rootView;
+    }
+
+    //the list that determines the occurances of every move
+    private void instantiateMoveOccuranceRate(String s){
+        list_occuringCount = new ArrayList<Integer>();
+        String[] strArray = s.split(",");
+        int[] intArray = new int[strArray.length];
+        for(int i = 0; i < strArray.length; i++) {
+            intArray[i] = Integer.parseInt(strArray[i]);
+        }
+        for (int index = 0; index < intArray.length; index++)
+        {
+            list_occuringCount.add(intArray[index]);
+        }
+    }
+
+
+    //the list that holds the current count of moves as time goes on
+    @NonNull
+    private List<Integer> instantiateCurrentMoveCounter() {
+        list_currentCount=new ArrayList<Integer>();
+        list_currentCount.add(counter_rightHook);
+        list_currentCount.add(counter_leftHook);
+        list_currentCount.add(counter_rightJab);
+        list_currentCount.add(counter_leftJab);
+        list_currentCount.add(counter_rightUpperCut);
+        list_currentCount.add(counter_leftUpperCut);
+        list_currentCount.add(counter_rightKnee);
+        list_currentCount.add(counter_leftKnee);
+        list_currentCount.add(counter_stepBack);
+        list_currentCount.add(counter_dodgeLeft);
+        list_currentCount.add(counter_dodgeRight);
+        list_currentCount.add(counter_rightKick);
+        list_currentCount.add(counter_leftKick);
+        return list_currentCount;
     }
 
     public static int getRandom(int[] array) {
@@ -102,8 +135,7 @@ public class DetailFragment extends Fragment {
         return array[rnd];
     }
 
-
-
+    //media playback and touch events
     private void instantiateTouchEvents() {
         isPlaying=false;
         vWorkoutControl.setOnClickListener(new View.OnClickListener() {
@@ -112,23 +144,39 @@ public class DetailFragment extends Fragment {
                 if(isPlaying){
 
                 }else if(!isPlaying){
-                    MediaPlayer mediaPlayer = null;
                     mediaPlayer = new MediaPlayer();
-
                     String fileName = Config.MOVE_RIGHT_JAB;
                     try {
                         AssetFileDescriptor afd = getActivity().getAssets().openFd(fileName);
                         mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
                         afd.close();
                         mediaPlayer.prepare();
-                    } catch (final Exception e) {
+                        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            mediaPlayer.stop();
+                            try {
+                                mediaPlayer.reset();
+                                AssetFileDescriptor afd = getActivity().getAssets().openFd(Config.MOVE_RIGHT_JAB);
+                                mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                                afd.close();
+                                mediaPlayer.prepare();
+                                mediaPlayer.start();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    mediaPlayer.start();
+                    } catch (final IOException e) {
                         e.printStackTrace();
                     }
-                    mediaPlayer.start();
                 }
             }
         });
     }
+
+
 
 
 

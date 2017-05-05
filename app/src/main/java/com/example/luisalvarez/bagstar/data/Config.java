@@ -43,7 +43,7 @@ public class Config {
         URL url = null;
         try {
             //json info
-            url = new URL("https://api.myjson.com/bins/1dy3l9" );
+            url = new URL("https://api.myjson.com/bins/snq31" );
         } catch (MalformedURLException ignored) {
             // TODO: throw a real error
             Log.e(TAG, "Please check your internet connection.");

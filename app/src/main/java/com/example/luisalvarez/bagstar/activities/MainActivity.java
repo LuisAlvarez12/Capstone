@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     values.put(DataContract.ProfileEntry.COLUMN_PROFILE_STREAK, object.getString("streak" ));
                     values.put(DataContract.ProfileEntry.COLUMN_PROFILE_ID, object.getString("id" ));
 
+
                     //add to arraylist
                     //ContentProviderOperation allows a batch insert for data integrity reasons
 //                  cpo.add(ContentProviderOperation.newInsert(dirUri).withValues(values).build());
@@ -121,7 +122,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     values.put(DataContract.WorkoutsEntry.COLUMN_WORKOUT_CUSTOM_WORKOUT, object.getString("workoutCustom" ));
                     values.put(DataContract.WorkoutsEntry.COLUMN_WORKOUT_IMG_LINK, object.getString("workoutImageLink" ));
                     values.put(DataContract.WorkoutsEntry.COLUMN_WORKOUT_TIME, object.getString("workoutTime" ));
-
+                    String holder ="";
+                    JSONArray movesArray = object.getJSONArray("workoutReoccuringCount");
+                    for(int a = 0; a<movesArray.length();a++){
+                        int count = movesArray.getInt(a);
+                        for (int k = 0; k<count;k++){
+                            holder=holder+a+",";
+                        }
+                    }
+                    holder = holder.substring(0,holder.length()-1);
+                    values.put(DataContract.WorkoutsEntry.COLUMN_WORKOUT_MOVE_ARRAY, holder);
+                    Log.d("count",holder);
 
 
                     //add to arraylist
